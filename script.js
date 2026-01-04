@@ -1,58 +1,58 @@
-// 1. WELCOME SCREEN TEXT ANIMATION
 const welcomeTexts = [
   { main: "Website Kenangan", sub: "Tempat menyimpan cerita kita." },
   { main: "Untuk Kenangan Indah", sub: "Semua momen spesial tersimpan di sini." },
-  { main: "Untuk Kamu dan Dia", sub: "Terima kasih sudah menjadi bagian dari hidupku." }
+  { main: "Untuk Aku dan Kamu", sub: "Terima kasih sudah menjadi bagian dari hidupku." }
 ];
 
 let textIndex = 0;
 const mainTextElement = document.getElementById("typingText");
 const subTextElement = document.getElementById("subText");
+const audio = document.getElementById("myAudio");
+const playIcon = document.getElementById("mainPlayIcon");
+const songTitle = document.getElementById("currentSongTitle");
+const playerContainer = document.querySelector(".music-floater");
+
+let currentPlayingKey = null;
+
+const songs = {
+  perfect: { url: "myAudio/lagu-perfect.mp3", title: "Perfect - Ed Sheeran" },
+  thousand: { url: "myAudio/lagu-thousand.mp3", title: "A Thousand Years" },
+  allofme: { url: "myAudio/lagu-allofme.mp3", title: "All of Me - John Legend" }
+};
 
 function changeText() {
-  // Fade out
   mainTextElement.style.opacity = 0;
   subTextElement.style.opacity = 0;
 
   setTimeout(() => {
-    // Ganti Teks
     textIndex = (textIndex + 1) % welcomeTexts.length;
     mainTextElement.innerText = welcomeTexts[textIndex].main;
     subTextElement.innerText = welcomeTexts[textIndex].sub;
 
-    // Fade in
     mainTextElement.style.opacity = 1;
     subTextElement.style.opacity = 1;
-  }, 500); // Tunggu setengah detik (sesuai css transition)
+  }, 500);
 }
 
-// Jalankan ganti teks setiap 3 detik
 let textInterval = setInterval(changeText, 3000);
 
-
-// 2. MASUK KE WEBSITE
 function enterWebsite() {
-  clearInterval(textInterval); // Stop animasi teks
+  clearInterval(textInterval);
 
   const welcome = document.getElementById("welcomeScreen");
   const main = document.getElementById("mainContent");
-  const music = document.getElementById("myAudio");
 
   welcome.style.opacity = "0";
   setTimeout(() => {
     welcome.style.display = "none";
     main.classList.add("show-content");
-
-    // Play Music
-    music.play().then(() => {
-      updatePlayerUI(true, "Perfect - Ed Sheeran");
-    }).catch(error => {
+    audio.volume = 0.5;
+    audio.play().catch(error => {
       console.log("Autoplay blocked:", error);
     });
   }, 800);
 }
 
-// 3. TIMER (SET TANGGAL JADIAN DI SINI)
 const startDate = new Date("2023-02-14T00:00:00").getTime();
 
 function updateTimer() {
@@ -71,7 +71,6 @@ function updateTimer() {
 }
 setInterval(updateTimer, 1000);
 
-// 4. SCROLL ANIMATION
 window.addEventListener("scroll", reveal);
 function reveal() {
   const reveals = document.querySelectorAll(".reveal");
@@ -85,56 +84,78 @@ function reveal() {
   }
 }
 
-// 5. MUSIC PLAYER (Path folder: myAudio/)
-const audio = document.getElementById("myAudio");
-const playIcon = document.getElementById("mainPlayIcon");
-const songTitle = document.getElementById("currentSongTitle");
-const playerContainer = document.querySelector(".music-floater");
-
-const songs = {
-  perfect: { url: "myAudio/lagu-perfect.mp3", title: "Perfect - Ed Sheeran" },
-  thousand: { url: "myAudio/lagu-thousand.mp3", title: "A Thousand Years" },
-  allofme: { url: "myAudio/lagu-allofme.mp3", title: "All of Me - John Legend" }
-};
-
 function playSong(key) {
   const song = songs[key];
+  const playerBar = document.getElementById("playerBar");
 
-  // 1. Putar Audio
-  audio.src = song.url;
-  audio.play();
+  if (currentPlayingKey === key) {
+    if (audio.paused) {
+      audio.play();
+      playerBar.classList.add("show-player");
+      updatePlayerUI(true, song.title);
+      updateListIcon(key, true);
+    } else {
+      audio.pause();
+      playerBar.classList.remove("show-player");
+      updatePlayerUI(false, song.title);
+      updateListIcon(key, false);
+    }
+  } else {
+    currentPlayingKey = key;
+    audio.src = song.url;
+    audio.volume = 1.0;
+    audio.play();
 
-  // 2. Update Judul di Player Bawah
-  updatePlayerUI(true, song.title);
+    playerBar.classList.add("show-player");
+    updatePlayerUI(true, song.title);
 
-  // 3. RESET TAMPILAN: Hapus class 'playing' dari semua lagu
-  document.querySelectorAll('.track-item').forEach(item => {
-    item.classList.remove('playing');
-    // Kembalikan ikon jadi Play biasa
-    const icon = item.querySelector('.track-icon i');
-    icon.classList.remove('fa-music');
-    icon.classList.add('fa-play');
-  });
+    resetAllListIcons();
+    updateListIcon(key, true);
 
-  // 4. SET TAMPILAN BARU: Tambah class 'playing' ke lagu yang dipilih
-  const activeTrack = document.getElementById(`track-${key}`);
-  if (activeTrack) {
-    activeTrack.classList.add('playing');
-    // Ubah ikon jadi not balok
-    const icon = activeTrack.querySelector('.track-icon i');
-    icon.classList.remove('fa-play');
-    icon.classList.add('fa-music');
+    const activeTrack = document.getElementById(`track-${key}`);
+    if (activeTrack) activeTrack.classList.add('playing');
   }
 }
 
 function toggleMusic() {
+  if (!currentPlayingKey) return;
+
+  const playerBar = document.getElementById("playerBar");
+
   if (audio.paused) {
     audio.play();
+    playerBar.classList.add("show-player");
     updatePlayerUI(true);
+    updateListIcon(currentPlayingKey, true);
   } else {
     audio.pause();
+    playerBar.classList.remove("show-player");
     updatePlayerUI(false);
+    updateListIcon(currentPlayingKey, false);
   }
+}
+
+function updateListIcon(key, isPlaying) {
+  const trackItem = document.getElementById(`track-${key}`);
+  if (trackItem) {
+    const icon = trackItem.querySelector('.track-icon i');
+    if (isPlaying) {
+      icon.classList.remove('fa-play');
+      icon.classList.add('fa-pause');
+    } else {
+      icon.classList.remove('fa-pause');
+      icon.classList.add('fa-play');
+    }
+  }
+}
+
+function resetAllListIcons() {
+  document.querySelectorAll('.track-item').forEach(item => {
+    item.classList.remove('playing');
+    const icon = item.querySelector('.track-icon i');
+    icon.classList.remove('fa-pause');
+    icon.classList.add('fa-play');
+  });
 }
 
 function updatePlayerUI(isPlaying, title = null) {
@@ -148,6 +169,36 @@ function updatePlayerUI(isPlaying, title = null) {
     playIcon.classList.remove("fa-pause");
     playIcon.classList.add("fa-play");
     playerContainer.classList.remove("music-playing");
+  }
+}
+
+function createHeartShower() {
+  const container = document.body;
+  const colors = ["#ec4899", "#8b5cf6", "#d946ef", "#a855f7"];
+
+  for (let i = 0; i < 30; i++) {
+    const heart = document.createElement("div");
+    heart.classList.add("floating-flower");
+
+    heart.innerHTML = '<i class="fas fa-heart"></i>';
+
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    heart.style.color = randomColor;
+
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (Math.random() * 20 + 15) + "px";
+    heart.style.animationDuration = (Math.random() * 3 + 3) + "s";
+    heart.style.animationDelay = Math.random() + "s";
+
+    container.appendChild(heart);
+
+    setTimeout(() => {
+      heart.remove();
+    }, 6000);
+  }
+
+  if (navigator.vibrate) {
+    navigator.vibrate(100);
   }
 }
 

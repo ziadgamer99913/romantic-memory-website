@@ -4,16 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Perjalanan Kita</title>
-
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -21,26 +17,20 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <!-- WELCOME OVERLAY (Halaman Pembuka) -->
     <div id="welcomeScreen" class="welcome-overlay">
       <div class="welcome-content">
-        <!-- Teks Berubah-ubah -->
         <h1 id="typingText" class="fade-text">Website Kenangan</h1>
         <p id="subText" class="fade-text-sub">Tempat menyimpan cerita kita.</p>
-
         <button class="btn-open" onclick="enterWebsite()">
           Lihat Cerita Kita
         </button>
       </div>
     </div>
 
-    <!-- BACKGROUND ANIMATION (Stars & Gradient) -->
     <div class="bg-fixed"></div>
     <div class="star-overlay"></div>
 
-    <!-- MAIN CONTENT -->
     <main id="mainContent" class="hidden-content">
-      <!-- HERO SECTION (Langsung Muncul) -->
       <section class="hero active">
         <div class="hero-content">
           <h1>Us, in Time.</h1>
@@ -48,7 +38,6 @@
             Setiap detik yang berlalu adalah cerita milik kita.
           </p>
 
-          <!-- TIMER -->
           <div class="timer-wrapper">
             <div class="time-segment">
               <span id="days">00</span>
@@ -81,16 +70,18 @@
         </div>
       </section>
 
-      <!-- PLAYLIST SECTION -->
       <section id="playlist" class="section">
         <div class="section-header reveal">
-          <h2>Playlist Kita</h2>
+          <h2>Lagu Favorit Kita</h2>
           <p>Melodi yang selalu mengingatkanku padamu</p>
         </div>
 
         <div class="track-list reveal">
-          <!-- Track 1 : Tambahkan id="track-perfect" -->
-          <div id="track-perfect" class="track-item" onclick="playSong('perfect')">
+          <div
+            id="track-perfect"
+            class="track-item"
+            onclick="playSong('perfect')"
+          >
             <div class="track-icon"><i class="fas fa-play"></i></div>
             <div class="track-info">
               <h3>Perfect</h3>
@@ -99,8 +90,11 @@
             <div class="track-duration">4:23</div>
           </div>
 
-          <!-- Track 2 : Tambahkan id="track-thousand" -->
-          <div id="track-thousand" class="track-item" onclick="playSong('thousand')">
+          <div
+            id="track-thousand"
+            class="track-item"
+            onclick="playSong('thousand')"
+          >
             <div class="track-icon"><i class="fas fa-play"></i></div>
             <div class="track-info">
               <h3>A Thousand Years</h3>
@@ -109,8 +103,11 @@
             <div class="track-duration">4:45</div>
           </div>
 
-          <!-- Track 3 : Tambahkan id="track-allofme" -->
-          <div id="track-allofme" class="track-item" onclick="playSong('allofme')">
+          <div
+            id="track-allofme"
+            class="track-item"
+            onclick="playSong('allofme')"
+          >
             <div class="track-icon"><i class="fas fa-play"></i></div>
             <div class="track-info">
               <h3>All of Me</h3>
@@ -119,62 +116,99 @@
             <div class="track-duration">4:29</div>
           </div>
         </div>
-        </div>
       </section>
 
-      <!-- STORY TIMELINE -->
       <section id="stories" class="section">
         <div class="section-header reveal">
-          <h2>Perjalanan Kita</h2>
-          <p>Bagaimana kita memulai dan berjalan hingga kini</p>
+          <h2>Jejak Kisah Kita</h2>
+          <p>
+            Dari "hai" yang sederhana, hingga "jangan pergi" yang penuh makna.
+            Ini adalah garis waktu favoritku.
+          </p>
         </div>
 
         <div class="timeline">
-          <!-- Story 1 -->
           <div class="timeline-box left reveal">
+            <div class="date-badge">10 Jan 2023</div>
+            <div class="box-content">
+              <h3><i class="fas fa-comments"></i> Notifikasi Pertama</h3>
+              <p>
+                Berawal dari reply story atau pesan singkat yang canggung. Siapa
+                sangka, notifikasi darimu hari itu adalah awal dari skenario
+                terindah yang disiapkan semesta untukku.
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-box right reveal">
             <div class="date-badge">14 Feb 2023</div>
             <div class="box-content">
-              <h3>Pertama Bertemu</h3>
+              <h3><i class="fas fa-coffee"></i> Tatap Muka Pertama</h3>
               <p>
-                Momen canggung tapi manis. Kopi pertama, tawa pertama, dan awal
-                dari segalanya.
+                Jantung berdebar lebih cepat dari biasanya. Di kedai kopi itu,
+                aku melihat senyummu secara langsung untuk pertama kalinya.
+                Detik itu aku tahu, aku ingin melihat senyum itu setiap hari.
               </p>
             </div>
           </div>
 
-          <!-- Story 2 -->
-          <div class="timeline-box right reveal">
+          <div class="timeline-box left reveal">
             <div class="date-badge">20 Feb 2023</div>
             <div class="box-content">
-              <h3>Hari Jadian</h3>
+              <h3><i class="fas fa-heart"></i> Kita Dimulai</h3>
               <p>
-                Hari dimana kita memutuskan untuk melangkah bersama. Tanggal
-                yang tak akan kulupa.
+                Bukan lagi "aku" dan "kamu", tapi "kita". Hari dimana kita
+                sepakat untuk saling menjaga, saling mengerti, dan berjalan
+                beriringan. Tanggal ini akan selalu jadi sandi rahasia kita.
               </p>
             </div>
           </div>
 
-          <!-- Story 3 -->
+          <div class="timeline-box right reveal">
+            <div class="date-badge">15 Mei 2023</div>
+            <div class="box-content">
+              <h3><i class="fas fa-moon"></i> Percakapan Tengah Malam</h3>
+              <p>
+                Malam itu, kita bicara tentang mimpi, ketakutan, dan masa depan
+                hingga larut. Di sana aku sadar, kamu bukan sekadar pacar, tapi
+                juga rumah tempatku pulang dan berbagi segala rasa.
+              </p>
+            </div>
+          </div>
+
           <div class="timeline-box left reveal">
             <div class="date-badge">10 Agt 2023</div>
             <div class="box-content">
-              <h3>Liburan Pertama</h3>
+              <h3>
+                <i class="fas fa-plane-departure"></i> Petualangan Pertama
+              </h3>
               <p>
-                Perjalanan pertama kita. Pantai, senja, dan obrolan panjang
-                tentang masa depan.
+                Matahari terbenam, suara ombak, dan tawa kita yang lepas.
+                Perjalanan ini mengajarkanku bahwa tujuan destinasi itu tidak
+                penting, asalkan teman perjalanannya adalah kamu.
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-box right reveal">
+            <div class="date-badge">12 Des 2023</div>
+            <div class="box-content">
+              <h3><i class="fas fa-gift"></i> Bertambah Usia Bersamamu</h3>
+              <p>
+                Meniup lilin di sampingmu terasa berbeda. Doaku sederhana:
+                Semoga di tahun-tahun berikutnya, wajahmu lah yang selalu
+                kulihat setiap kali aku membuka mata di hari bahagiaku.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- GALLERY -->
       <section class="section">
         <div class="section-header reveal">
           <h2>Momen Terindah</h2>
         </div>
         <div class="gallery-container reveal">
-          <!-- FOTO 1 -->
           <div class="polaroid rotate-left">
             <img
               src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&auto=format&fit=crop"
@@ -182,7 +216,6 @@
             />
             <div class="caption">Kita yang konyol</div>
           </div>
-          <!-- FOTO 2 -->
           <div class="polaroid rotate-right">
             <img
               src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=600&auto=format&fit=crop"
@@ -190,7 +223,6 @@
             />
             <div class="caption">Senja bersamamu</div>
           </div>
-          <!-- FOTO 3 -->
           <div class="polaroid rotate-left">
             <img
               src="https://images.unsplash.com/photo-1621621667797-e06afc217fb0?w=600&auto=format&fit=crop"
@@ -201,7 +233,6 @@
         </div>
       </section>
 
-      <!-- CLOSING SECTION (Sesuai Foto Pertama) -->
       <section class="section closing-section reveal">
         <div class="closing-content">
           <h2 class="gradient-text-big">
@@ -212,7 +243,11 @@
           </h2>
 
           <div class="glow-box">
-            <i class="fas fa-heart heart-beat"></i>
+            <i
+              class="fas fa-heart heart-beat"
+              id="loveIcon"
+              onclick="createHeartShower()"
+            ></i>
             <p>
               Terima kasih sudah menjadi bagian dari hidupku. Setiap detik
               bersamamu adalah hadiah yang tak ternilai.
@@ -221,13 +256,11 @@
         </div>
       </section>
 
-      <!-- FOOTER -->
       <footer>
         <p>Dibuat dengan segenap hati, untuk Kamu.</p>
       </footer>
     </main>
 
-    <!-- FLOATING PLAYER -->
     <div class="music-floater" id="playerBar">
       <div class="floater-info">
         <div class="equalizer"><span></span><span></span><span></span></div>
@@ -242,9 +275,8 @@
       </button>
     </div>
 
-    <!-- AUDIO ELEMENT (Path Updated) -->
     <audio id="myAudio" loop>
-      <source src="myAudio/lagu-perfect.mp3" type="audio/mpeg" />
+      <source src="myAudio/lagu-kotainitaksamatanpamu.mp3" type="audio/mpeg" />
     </audio>
 
     <script src="script.js"></script>
