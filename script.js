@@ -1,207 +1,242 @@
-const welcomeTexts = [
-  { main: "Website Kenangan", sub: "Tempat menyimpan cerita kita." },
-  { main: "Untuk Kenangan Indah", sub: "Semua momen spesial tersimpan di sini." },
-  { main: "Untuk Aku dan Kamu", sub: "Terima kasih sudah menjadi bagian dari hidupku." }
-];
+// DOM Elements
+const bgMusic = document.getElementById('bgMusic');
+const openLetterBtn = document.getElementById('openLetterBtn');
+const envelopeContainer = document.getElementById('envelopeContainer');
+const letterContainer = document.getElementById('letterContainer');
+const showDateBtn = document.getElementById('showDateBtn');
+const dateDisplay = document.getElementById('dateDisplay');
+const continueBtn = document.getElementById('continueBtn');
+const continueToFinalBtn = document.getElementById('continueToFinalBtn');
+const page1 = document.getElementById('page1');
+const page2 = document.getElementById('page2');
+const page3 = document.getElementById('page3');
+const heartsRain = document.getElementById('heartsRain');
+const photoSection = document.getElementById('photoSection');
+const loveMessage = document.getElementById('loveMessage');
+const slideshow = document.getElementById('slideshow');
+const slideshowDots = document.getElementById('slideshowDots');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
 
-let textIndex = 0;
-const mainTextElement = document.getElementById("typingText");
-const subTextElement = document.getElementById("subText");
-const audio = document.getElementById("myAudio");
-const playIcon = document.getElementById("mainPlayIcon");
-const songTitle = document.getElementById("currentSongTitle");
-const playerContainer = document.querySelector(".music-floater");
+// State
+let currentSlide = 0;
+let allPhotosViewed = false;
+let musicStarted = false;
 
-let currentPlayingKey = null;
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    createFloatingHearts();
+    setupSlideshow();
+    
+    // Try to play music on any user interaction
+    document.body.addEventListener('click', startMusic, { once: true });
+    document.body.addEventListener('touchstart', startMusic, { once: true });
+});
 
-const songs = {
-  perfect: { url: "myAudio/lagu-perfect.mp3", title: "Perfect - Ed Sheeran" },
-  thousand: { url: "myAudio/lagu-thousand.mp3", title: "A Thousand Years" },
-  allofme: { url: "myAudio/lagu-allofme.mp3", title: "All of Me - John Legend" }
-};
-
-function changeText() {
-  mainTextElement.style.opacity = 0;
-  subTextElement.style.opacity = 0;
-
-  setTimeout(() => {
-    textIndex = (textIndex + 1) % welcomeTexts.length;
-    mainTextElement.innerText = welcomeTexts[textIndex].main;
-    subTextElement.innerText = welcomeTexts[textIndex].sub;
-
-    mainTextElement.style.opacity = 1;
-    subTextElement.style.opacity = 1;
-  }, 500);
-}
-
-let textInterval = setInterval(changeText, 3000);
-
-function enterWebsite() {
-  clearInterval(textInterval);
-
-  const welcome = document.getElementById("welcomeScreen");
-  const main = document.getElementById("mainContent");
-
-  welcome.style.opacity = "0";
-  setTimeout(() => {
-    welcome.style.display = "none";
-    main.classList.add("show-content");
-    audio.volume = 0.5;
-    audio.play().catch(error => {
-      console.log("Autoplay blocked:", error);
-    });
-  }, 800);
-}
-
-const startDate = new Date("2023-02-14T00:00:00").getTime();
-
-function updateTimer() {
-  const now = new Date().getTime();
-  const distance = now - startDate;
-
-  const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-  document.getElementById("days").innerText = days < 10 ? "0" + days : days;
-  document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
-  document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
-  document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
-}
-setInterval(updateTimer, 1000);
-
-window.addEventListener("scroll", reveal);
-function reveal() {
-  const reveals = document.querySelectorAll(".reveal");
-  for (let i = 0; i < reveals.length; i++) {
-    const windowHeight = window.innerHeight;
-    const elementTop = reveals[i].getBoundingClientRect().top;
-    const elementVisible = 100;
-    if (elementTop < windowHeight - elementVisible) {
-      reveals[i].classList.add("active");
+// Start background music
+function startMusic() {
+    if (!musicStarted) {
+        bgMusic.volume = 0.5;
+        bgMusic.play().catch(err => console.log('Music autoplay blocked'));
+        musicStarted = true;
     }
-  }
 }
 
-function playSong(key) {
-  const song = songs[key];
-  const playerBar = document.getElementById("playerBar");
-
-  if (currentPlayingKey === key) {
-    if (audio.paused) {
-      audio.play();
-      playerBar.classList.add("show-player");
-      updatePlayerUI(true, song.title);
-      updateListIcon(key, true);
-    } else {
-      audio.pause();
-      playerBar.classList.remove("show-player");
-      updatePlayerUI(false, song.title);
-      updateListIcon(key, false);
+// Create floating hearts background
+function createFloatingHearts() {
+    const container = document.getElementById('floatingHearts');
+    const hearts = ['❤', '💕', '💗', '💖', '💝'];
+    
+    for (let i = 0; i < 20; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'floating-heart';
+        heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        heart.style.animationDelay = (Math.random() * 10) + 's';
+        heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
+        container.appendChild(heart);
     }
-  } else {
-    currentPlayingKey = key;
-    audio.src = song.url;
-    audio.volume = 1.0;
-    audio.play();
-
-    playerBar.classList.add("show-player");
-    updatePlayerUI(true, song.title);
-
-    resetAllListIcons();
-    updateListIcon(key, true);
-
-    const activeTrack = document.getElementById(`track-${key}`);
-    if (activeTrack) activeTrack.classList.add('playing');
-  }
 }
 
-function toggleMusic() {
-  if (!currentPlayingKey) return;
-
-  const playerBar = document.getElementById("playerBar");
-
-  if (audio.paused) {
-    audio.play();
-    playerBar.classList.add("show-player");
-    updatePlayerUI(true);
-    updateListIcon(currentPlayingKey, true);
-  } else {
-    audio.pause();
-    playerBar.classList.remove("show-player");
-    updatePlayerUI(false);
-    updateListIcon(currentPlayingKey, false);
-  }
-}
-
-function updateListIcon(key, isPlaying) {
-  const trackItem = document.getElementById(`track-${key}`);
-  if (trackItem) {
-    const icon = trackItem.querySelector('.track-icon i');
-    if (isPlaying) {
-      icon.classList.remove('fa-play');
-      icon.classList.add('fa-pause');
-    } else {
-      icon.classList.remove('fa-pause');
-      icon.classList.add('fa-play');
-    }
-  }
-}
-
-function resetAllListIcons() {
-  document.querySelectorAll('.track-item').forEach(item => {
-    item.classList.remove('playing');
-    const icon = item.querySelector('.track-icon i');
-    icon.classList.remove('fa-pause');
-    icon.classList.add('fa-play');
-  });
-}
-
-function updatePlayerUI(isPlaying, title = null) {
-  if (title) songTitle.innerText = title;
-
-  if (isPlaying) {
-    playIcon.classList.remove("fa-play");
-    playIcon.classList.add("fa-pause");
-    playerContainer.classList.add("music-playing");
-  } else {
-    playIcon.classList.remove("fa-pause");
-    playIcon.classList.add("fa-play");
-    playerContainer.classList.remove("music-playing");
-  }
-}
-
-function createHeartShower() {
-  const container = document.body;
-  const colors = ["#ec4899", "#8b5cf6", "#d946ef", "#a855f7"];
-
-  for (let i = 0; i < 30; i++) {
-    const heart = document.createElement("div");
-    heart.classList.add("floating-flower");
-
-    heart.innerHTML = '<i class="fas fa-heart"></i>';
-
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    heart.style.color = randomColor;
-
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.fontSize = (Math.random() * 20 + 15) + "px";
-    heart.style.animationDuration = (Math.random() * 3 + 3) + "s";
-    heart.style.animationDelay = Math.random() + "s";
-
-    container.appendChild(heart);
-
+// Open Letter Button Click
+openLetterBtn.addEventListener('click', () => {
+    startMusic();
+    envelopeContainer.classList.add('hidden');
+    letterContainer.classList.remove('hidden');
+    
+    // Show "Show Date" button after letter appears
     setTimeout(() => {
-      heart.remove();
-    }, 6000);
-  }
+        showDateBtn.classList.remove('hidden');
+        showDateBtn.style.animation = 'fadeIn 0.5s ease-out forwards';
+    }, 1000);
+});
 
-  if (navigator.vibrate) {
-    navigator.vibrate(100);
-  }
+// Show Date Button Click
+showDateBtn.addEventListener('click', () => {
+    showDateBtn.classList.add('hidden');
+    dateDisplay.classList.remove('hidden');
+    
+    // Show Continue button after date appears
+    setTimeout(() => {
+        continueBtn.classList.remove('hidden');
+        continueBtn.style.animation = 'fadeIn 0.5s ease-out forwards';
+    }, 800);
+});
+
+// Continue Button Click - Go to Page 2
+continueBtn.addEventListener('click', () => {
+    page1.classList.remove('active');
+    page2.classList.add('active');
+    
+    // Start hearts rain
+    createHeartsRain();
+    
+    // Setup scroll observer for photos
+    setupPhotoObserver();
+});
+
+// Create raining hearts for Page 2
+function createHeartsRain() {
+    const hearts = ['❤', '💕', '💗', '💖', '💝', '💘', '💓'];
+    
+    // Create hearts continuously
+    const rainInterval = setInterval(() => {
+        if (!page2.classList.contains('active')) {
+            clearInterval(rainInterval);
+            return;
+        }
+        
+        const heart = document.createElement('div');
+        heart.className = 'rain-heart';
+        heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
+        heartsRain.appendChild(heart);
+        
+        // Remove heart after animation
+        setTimeout(() => {
+            heart.remove();
+        }, 7000);
+    }, 200);
 }
 
-function scrollToSection(id) {
-  document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+// Setup photo observer for scroll reveal
+function setupPhotoObserver() {
+    const photos = document.querySelectorAll('.photo-item');
+    let viewedCount = 0;
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !entry.target.classList.contains('visible')) {
+                entry.target.classList.add('visible');
+                viewedCount++;
+                
+                // Check if all photos have been viewed
+                if (viewedCount >= photos.length && !allPhotosViewed) {
+                    allPhotosViewed = true;
+                    setTimeout(() => {
+                        continueToFinalBtn.classList.remove('hidden');
+                        continueToFinalBtn.style.animation = 'fadeIn 0.8s ease-out forwards';
+                    }, 1000);
+                }
+            }
+        });
+    }, {
+        threshold: 0.5,
+        rootMargin: '0px'
+    });
+    
+    photos.forEach(photo => observer.observe(photo));
+    
+    // Show first photo immediately
+    setTimeout(() => {
+        photos[0].classList.add('visible');
+    }, 500);
+}
+
+// Continue to Final Page
+continueToFinalBtn.addEventListener('click', () => {
+    page2.classList.remove('active');
+    page3.classList.add('active');
+    
+    // Show love message for 5 seconds, then slideshow
+    setTimeout(() => {
+        loveMessage.classList.add('hidden');
+        slideshow.classList.remove('hidden');
+    }, 5000);
+});
+
+// Setup Slideshow
+function setupSlideshow() {
+    const slides = document.querySelectorAll('.slide');
+    
+    // Create dots
+    slides.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (index === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goToSlide(index));
+        slideshowDots.appendChild(dot);
+    });
+    
+    // Auto-advance slides
+    setInterval(() => {
+        if (page3.classList.contains('active') && !slideshow.classList.contains('hidden')) {
+            nextSlide();
+        }
+    }, 4000);
+}
+
+function goToSlide(index) {
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    
+    slides[currentSlide].classList.remove('active');
+    dots[currentSlide].classList.remove('active');
+    
+    currentSlide = index;
+    if (currentSlide >= slides.length) currentSlide = 0;
+    if (currentSlide < 0) currentSlide = slides.length - 1;
+    
+    slides[currentSlide].classList.add('active');
+    dots[currentSlide].classList.add('active');
+}
+
+function nextSlide() {
+    goToSlide(currentSlide + 1);
+}
+
+function prevSlide() {
+    goToSlide(currentSlide - 1);
+}
+
+// Slideshow navigation
+prevBtn.addEventListener('click', prevSlide);
+nextBtn.addEventListener('click', nextSlide);
+
+// Touch swipe support for slideshow
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.querySelector('.slideshow-wrapper')?.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+});
+
+document.querySelector('.slideshow-wrapper')?.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+});
+
+function handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+            nextSlide();
+        } else {
+            prevSlide();
+        }
+    }
 }
