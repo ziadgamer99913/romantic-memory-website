@@ -41,6 +41,7 @@ startBtn.addEventListener('click', () => {
 // Start background music
 function startMusic() {
     if (!musicStarted) {
+        bgMusic.currentTime = 30;
         bgMusic.volume = 0.5;
         bgMusic.play().catch(err => {});
         musicStarted = true;
