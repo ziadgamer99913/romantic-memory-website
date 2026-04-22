@@ -19,11 +19,31 @@ const slideshow = document.getElementById('slideshow');
 const slideshowDots = document.getElementById('slideshowDots');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
+const showMessageBtn = document.getElementById('showMessageBtn');
+const finalMessage = document.getElementById('finalMessage');
+const closeMessageBtn = document.getElementById('closeMessageBtn');
+const promiseSection = document.getElementById('promiseSection');
+const countdownSection = document.getElementById('countdownSection');
+const countdownNumber = document.getElementById('countdownNumber');
+const countdownPhoto = document.getElementById('countdownPhoto');
+const finalLove = document.getElementById('finalLove');
+const heartsBurst = document.getElementById('heartsBurst');
 
 // State
 let currentSlide = 0;
 let allPhotosViewed = false;
 let musicStarted = false;
+let slideshowComplete = false;
+let slidesViewedSet = new Set();
+
+// Photo URLs for countdown
+const photoUrls = [
+    'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Snapchat-1655443201-FlV8b85djezPcp34RrQh0NE1EmppTp.jpg',
+    'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Snapchat-1345163814-GwtSJzEVZXNwhk0mE21vJF8awIZPro.jpg',
+    'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG-20260331-WA0039-a7NDCCXa2y1aYLHuZPXbaWFYZRvtfw.jpg',
+    'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_20260412_173303-VbXTrHkpM3rGFbHvBDqXd0d8zg4p4X.jpg',
+    'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_20260419_183639_582-cwSRdtwOPDYjQpzxW3KMOW4ahDeGVB.webp'
+];
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -206,6 +226,18 @@ function goToSlide(index) {
     
     slides[currentSlide].classList.add('active');
     dots[currentSlide].classList.add('active');
+    
+    // Track viewed slides
+    slidesViewedSet.add(currentSlide);
+    
+    // Check if all slides have been viewed
+    if (slidesViewedSet.size >= slides.length && !slideshowComplete) {
+        slideshowComplete = true;
+        setTimeout(() => {
+            showMessageBtn.classList.remove('hidden');
+            showMessageBtn.style.animation = 'fadeIn 0.8s ease-out forwards';
+        }, 1000);
+    }
 }
 
 function nextSlide() {
@@ -244,4 +276,129 @@ function handleSwipe() {
             prevSlide();
         }
     }
+}
+
+// Show Message Button Click
+showMessageBtn.addEventListener('click', () => {
+    slideshow.classList.add('hidden');
+    finalMessage.classList.remove('hidden');
+});
+
+// Close Message Button Click
+closeMessageBtn.addEventListener('click', () => {
+    finalMessage.classList.add('hidden');
+    promiseSection.classList.remove('hidden');
+    
+    // Show promise for 3 seconds, then start countdown
+    setTimeout(() => {
+        promiseSection.classList.add('hidden');
+        startCountdown();
+    }, 3000);
+});
+
+// Countdown function
+function startCountdown() {
+    countdownSection.classList.remove('hidden');
+    let count = 5;
+    
+    // Set initial photo and number
+    countdownNumber.textContent = count;
+    countdownPhoto.src = photoUrls[5 - count];
+    countdownNumber.style.animation = 'none';
+    countdownNumber.offsetHeight; // Trigger reflow
+    countdownNumber.style.animation = 'countdownPulse 1s ease-in-out';
+    
+    const countdownInterval = setInterval(() => {
+        count--;
+        
+        if (count > 0) {
+            countdownNumber.textContent = count;
+            countdownPhoto.src = photoUrls[5 - count];
+            
+            // Reset animation
+            countdownNumber.style.animation = 'none';
+            countdownNumber.offsetHeight; // Trigger reflow
+            countdownNumber.style.animation = 'countdownPulse 1s ease-in-out';
+            
+            // Reset photo animation
+            const photoContainer = document.querySelector('.countdown-photo');
+            photoContainer.style.animation = 'none';
+            photoContainer.offsetHeight;
+            photoContainer.style.animation = 'photoReveal 0.8s ease-out forwards';
+        } else {
+            clearInterval(countdownInterval);
+            countdownSection.classList.add('hidden');
+            showFinalLove();
+        }
+    }, 1000);
+}
+
+// Show final "I Love You" with hearts burst
+function showFinalLove() {
+    finalLove.classList.remove('hidden');
+    createHeartsBurst();
+}
+
+// Create hearts burst effect
+function createHeartsBurst() {
+    const hearts = ['❤', '💕', '💗', '💖', '💝', '💘', '💓', '💞', '💟'];
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    
+    for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+            const heart = document.createElement('div');
+            heart.className = 'burst-heart';
+            heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+            
+            // Random direction from center
+            const angle = (Math.random() * 360) * (Math.PI / 180);
+            const distance = Math.random() * 300 + 100;
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+            
+            heart.style.left = centerX + 'px';
+            heart.style.top = centerY + 'px';
+            heart.style.setProperty('--tx', tx + 'px');
+            heart.style.setProperty('--ty', ty + 'px');
+            heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            
+            heartsBurst.appendChild(heart);
+            
+            // Remove after animation
+            setTimeout(() => {
+                heart.remove();
+            }, 3000);
+        }, i * 50);
+    }
+    
+    // Continue creating hearts periodically
+    setInterval(() => {
+        if (!finalLove.classList.contains('hidden')) {
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'burst-heart';
+                    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                    
+                    const angle = (Math.random() * 360) * (Math.PI / 180);
+                    const distance = Math.random() * 300 + 100;
+                    const tx = Math.cos(angle) * distance;
+                    const ty = Math.sin(angle) * distance;
+                    
+                    heart.style.left = centerX + 'px';
+                    heart.style.top = centerY + 'px';
+                    heart.style.setProperty('--tx', tx + 'px');
+                    heart.style.setProperty('--ty', ty + 'px');
+                    heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                    
+                    heartsBurst.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 3000);
+                }, i * 100);
+            }
+        }
+    }, 2000);
 }
