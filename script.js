@@ -1,5 +1,7 @@
 // DOM Elements
 const bgMusic = document.getElementById('bgMusic');
+const startScreen = document.getElementById('startScreen');
+const startBtn = document.getElementById('startBtn');
 const openLetterBtn = document.getElementById('openLetterBtn');
 const envelopeContainer = document.getElementById('envelopeContainer');
 const letterContainer = document.getElementById('letterContainer');
@@ -27,17 +29,20 @@ let musicStarted = false;
 document.addEventListener('DOMContentLoaded', () => {
     createFloatingHearts();
     setupSlideshow();
-    
-    // Try to play music on any user interaction
-    document.body.addEventListener('click', startMusic, { once: true });
-    document.body.addEventListener('touchstart', startMusic, { once: true });
+});
+
+// Start Button Click - Play music and go to letter page
+startBtn.addEventListener('click', () => {
+    startMusic();
+    startScreen.classList.remove('active');
+    page1.classList.add('active');
 });
 
 // Start background music
 function startMusic() {
     if (!musicStarted) {
         bgMusic.volume = 0.5;
-        bgMusic.play().catch(err => console.log('Music autoplay blocked'));
+        bgMusic.play().catch(err => {});
         musicStarted = true;
     }
 }
@@ -61,7 +66,6 @@ function createFloatingHearts() {
 
 // Open Letter Button Click
 openLetterBtn.addEventListener('click', () => {
-    startMusic();
     envelopeContainer.classList.add('hidden');
     letterContainer.classList.remove('hidden');
     
